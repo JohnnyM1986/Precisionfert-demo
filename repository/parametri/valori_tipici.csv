@@ -1,0 +1,13 @@
+coltura,areale,semina,densita_piante_m2,resa_attesa_t_ha,irriguo_tipico
+mais,A1,2026-04-05,7.5,11,1
+mais,A2,2026-04-10,8.0,13,1
+mais,A3,2026-04-12,7.8,12,1
+mais,A4,2026-04-15,7.5,11.5,0
+silomais,A1,2026-04-10,8.5,18,1
+silomais,A2,2026-04-15,9.0,20,1
+silomais,A3,2026-04-15,8.8,19,1
+silomais,A4,2026-04-20,8.5,18,0
+frumento,A1,2025-10-25,400,6.5,0
+frumento,A2,2025-10-28,420,7.5,0
+frumento,A3,2025-11-02,420,7.2,0
+frumento,A4,2025-11-05,400,7.0,0

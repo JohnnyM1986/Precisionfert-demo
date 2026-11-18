@@ -1,0 +1,5 @@
+id,nome,lat,lon,area_climatica,pioggia_media_mm,gdd_medi_apr_set
+ST05,Stazione DEMO Pedemontana,45.77,12.05,C05,1150,1850
+ST08,Stazione DEMO Pianura centrale,45.55,11.95,C08,920,2050
+ST11,Stazione DEMO Bassa pianura,45.20,11.50,C11,780,2200
+ST14,Stazione DEMO Costiera,45.30,12.40,C14,820,2150

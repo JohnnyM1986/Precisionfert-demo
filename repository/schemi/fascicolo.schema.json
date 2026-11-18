@@ -1,0 +1,5 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"Fascicolo agricoltore PrecisionFERT (DEMO)","type":"object",
+"required":["versione_schema","appezzamento","coltura"],
+"properties":{"versione_schema":{"type":"string"},"salvato_il":{"type":"string"},
+"appezzamento":{"type":"object","description":"GeoJSON Feature Polygon, WGS84"},
+"coltura":{"type":"object"},"suolo":{"type":"object"},"prezzi":{"type":"object"},"risultati":{"type":"object"}}}

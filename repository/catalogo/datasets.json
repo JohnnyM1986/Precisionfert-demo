@@ -1,0 +1,16 @@
+{
+  "_avviso": "DATI DI ESEMPIO (DEMO) – verosimili ma NON reali. Da sostituire con i dati dei partner.",
+  "versione_repository": "0.1.0-demo",
+  "data": "2026-11-18",
+  "datasets": [
+    {"id": "territorio.areali", "file": "territorio/areali_pedoclimatici.geojson", "fonte": "DEMO (in reale: ARPAV + nodo A1)", "licenza": "da decidere (es. CC-BY 4.0)", "copertura": "pianura veneta (geometrie semplificate)", "stato": "in attesa partner"},
+    {"id": "clima.stazioni", "file": "clima/stazioni.csv", "fonte": "DEMO (in reale: ARPAV)", "licenza": "da decidere", "stato": "in attesa partner"},
+    {"id": "clima.curve", "file": "clima/curve_biomassa_tipo.csv", "fonte": "DEMO (in reale: simulazioni DSSAT DAFNAE)", "licenza": "da decidere", "stato": "in attesa partner"},
+    {"id": "modelli.metamodello_N", "file": "modelli/metamodello_N_demo.json", "fonte": "DEMO (in reale: rete neurale DAFNAE esportata in ONNX)", "licenza": "da chiarire con DAFNAE", "stato": "in attesa partner"},
+    {"id": "regole.pk", "file": "regole/regole_pk.json", "fonte": "DEMO (in reale: UniPD)", "stato": "in attesa partner"},
+    {"id": "regole.asportazioni", "file": "regole/asportazioni_unitarie.csv", "fonte": "DEMO", "stato": "in attesa partner"},
+    {"id": "regole.conversioni", "file": "regole/conversioni_metodi_analisi.json", "fonte": "DEMO", "stato": "in attesa partner"},
+    {"id": "economia.prezzi", "file": "economia/prezzi.csv", "fonte": "DEMO (in reale: coordinato con WP4)", "stato": "da decidere"},
+    {"id": "parametri.valori_tipici", "file": "parametri/valori_tipici.csv", "fonte": "DEMO", "stato": "da decidere"}
+  ]
+}

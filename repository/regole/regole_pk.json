@@ -1,0 +1,5 @@
+{
+  "_avviso": "Regole DEMO, da sostituire con quelle UniPD",
+  "P": {"metodo_riferimento": "Olsen", "classi_ppm": [{"max": 10, "classe": "bassa", "fattore": 1.5}, {"max": 25, "classe": "media", "fattore": 1.0}, {"max": 9999, "classe": "alta", "fattore": 0.3}]},
+  "K": {"metodo_riferimento": "ammonio acetato", "classi_ppm": [{"max": 100, "classe": "bassa", "fattore": 1.4}, {"max": 180, "classe": "media", "fattore": 1.0}, {"max": 9999, "classe": "alta", "fattore": 0.2}]}
+}

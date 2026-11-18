@@ -1,0 +1,11 @@
+{
+  "_avviso": "Metamodello DEMO: piccola rete neurale con pesi inventati, al posto della rete DAFNAE (MATLAB -> ONNX). Serve solo a mostrare che il calcolo gira nel browser.",
+  "versione": "N_demo_v0.1",
+  "input": ["resa_attesa_t_ha", "so_pct", "irriguo_0_1", "gdd_norm", "annata_secco_0_1", "annata_umido_0_1"],
+  "normalizzazione": {"media": [11, 2.0, 0.5, 1.0, 0.33, 0.33], "dev": [4, 0.6, 0.5, 0.1, 0.47, 0.47]},
+  "W1": [[0.8,-0.3,0.4,0.2,-0.5,0.1],[0.2,0.6,-0.2,0.3,0.1,-0.4],[-0.4,0.1,0.7,-0.1,-0.6,0.2],[0.5,-0.5,0.3,0.4,0.2,0.3]],
+  "b1": [0.1,-0.2,0.05,0.0],
+  "W2": [[0.9,-0.5,0.6,0.4]],
+  "b2": [0.2],
+  "uscita": "parametri curva di risposta: Ymax = resa_attesa*(1+0.08*y), c = 0.012*(1+0.1*y); Y(N) = Ymax*(1 - 0.45*exp(-c*N))"
+}
