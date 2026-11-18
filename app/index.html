@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PrecisionFERT – Demo tool e repository</title>
+<link rel="stylesheet" href="vendor/leaflet.css">
+<style>
+:root{--v:#2E6B3A;--v2:#e8f1ea;--g:#f4f6f5;--t:#1d2a20}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--g);color:var(--t);font-size:15px}
+header{background:linear-gradient(120deg,#1f4f2a,#2E6B3A 60%,#5c8f3a);color:#fff;padding:14px 18px}
+header h1{margin:0;font-size:20px}header p{margin:4px 0 0;font-size:13px;opacity:.9}
+.demo{background:#fff4e0;color:#7a4b00;border-bottom:1px solid #f0d9a8;padding:7px 18px;font-size:13px}
+#nav{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;background:#fff;border-bottom:1px solid #ddd;position:sticky;top:0;z-index:1000}
+#nav button{flex:0 0 auto;border:1px solid #cfd8d1;background:#fff;border-radius:18px;padding:6px 11px;font-size:13px;cursor:pointer;color:var(--t)}
+#nav button.on{background:var(--v);color:#fff;border-color:var(--v)}
+main{max-width:1000px;margin:0 auto;padding:12px}
+section.passo{background:#fff;border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+h2{color:var(--v);font-size:18px;margin:0 0 4px}h3{font-size:15px;margin:16px 0 6px}
+.nota{font-size:13px;color:#5b665e;margin:0 0 10px}
+.mappa{height:360px;border-radius:10px;border:1px solid #ccd;background:#dfe9e1}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+button.b,label.b{background:var(--v);color:#fff;border:0;border-radius:8px;padding:9px 13px;font-size:14px;cursor:pointer}
+button.b.sec,label.b.sec{background:#fff;color:var(--v);border:1px solid var(--v)}
+label.b input{display:none}
+.griglia{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.campo label{display:block;font-size:12px;color:#5b665e;margin-bottom:3px}
+.campo input,.campo select{width:100%;padding:8px;border:1px solid #cdd5cf;border-radius:7px;font-size:15px;background:#fff}
+.precomp{transition:background .6s}.precomp.flash{background:#fff3b0!important}
+.ok{background:var(--v2);border-left:4px solid var(--v);padding:8px 10px;border-radius:6px;margin-top:8px}
+.warn{background:#fff4e0;border-left:4px solid #e0a000;padding:8px 10px;border-radius:6px;margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.card{background:var(--v2);border-radius:10px;padding:10px}.card .k{font-size:12px;color:#4a5a4e}.card .v{font-size:30px;font-weight:700;color:var(--v)}.card .u{font-size:12px}.card small{color:#5b665e}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border-bottom:1px solid #e3e7e4;padding:6px;text-align:left}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.graf{position:relative;height:260px}
+.st{background:#f3e5f5;color:#6a1b9a;border-radius:10px;padding:1px 7px;font-size:12px;white-space:nowrap}
+pre{background:#1e2320;color:#d6e8da;padding:10px;border-radius:8px;overflow:auto;max-height:320px;font-size:12px}
+textarea{width:100%;height:140px;font-size:11px}
+.lim li{margin-bottom:7px}.tag{font-size:11px;padding:1px 6px;border-radius:8px;margin-right:4px;font-weight:600}
+.t-ok{background:#e8f5e9;color:#2e7d32}.t-dec{background:#fff4e0;color:#b26a00}.t-no{background:#fdecea;color:#b71c1c}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:9px 14px;border-radius:8px;z-index:2000}
+#caricamento{padding:40px;text-align:center}
+.avanti{margin-top:14px;text-align:right}
+</style>
+</head>
+<body>
+<header><h1>PrecisionFERT – Demo del nuovo tool di concimazione</h1>
+<p>WP5 Att.11 · prototipo funzionante per la discussione · ATEA Group S.r.l. SB · 18/11/2026</p></header>
+<div class="demo">⚠️ <b>DEMO</b>: dati, regole e modello sono <b>di esempio, verosimili ma non reali</b>. Servono a mostrare le funzioni, non a dare consigli di concimazione.</div>
+<nav id="nav"></nav>
+<div id="caricamento">Caricamento dati dal repository…</div>
+<main>
+
+<section class="passo" id="p-mappa" data-titolo="1 Appezzamento">
+  <h2>1 · Disegna o carica l'appezzamento</h2>
+  <p class="nota">Tocca la mappa per mettere i vertici, oppure usa l'esempio o carica un GeoJSON. Il tool ricava da solo areale pedoclimatico, area climatica e stazione dal repository.</p>
+  <div id="mappa" class="mappa"></div>
+  <div class="bar">
+    <button class="b" id="btnEsempio">Usa appezzamento di esempio</button>
+    <button class="b sec" id="btnChiudi">Chiudi poligono</button>
+    <button class="b sec" id="btnCancella">Cancella</button>
+    <label class="b sec">Carica GeoJSON<input type="file" id="fileGeo" accept=".json,.geojson"></label>
+  </div>
+  <div class="nota" id="statoDisegno">Tocca la mappa per disegnare i vertici</div>
+  <div id="contesto"></div>
+  <div class="avanti"><button class="b" data-vai="1">Avanti →</button></div>
+</section>
+
+<section class="passo" id="p-coltura" data-titolo="2 Coltura" hidden>
+  <h2>2 · Coltura e gestione</h2>
+  <p class="nota">I valori tipici arrivano dal repository (<code>parametri/valori_tipici.csv</code>) in base a coltura e areale: l'agricoltore conferma o corregge a mano.</p>
+  <div class="griglia">
+    <div class="campo"><label>Coltura</label><select id="coltura"><option value="mais">Mais da granella</option><option value="silomais">Silomais</option><option value="frumento">Frumento tenero</option></select></div>
+    <div class="campo"><label>Data di semina</label><input id="semina" type="date" class="precomp"></div>
+    <div class="campo"><label>Densità (<span id="unitaDens">piante/m²</span>)</label><input id="densita" type="number" step="0.1" class="precomp"></div>
+    <div class="campo"><label>Resa attesa (t/ha)</label><input id="resa" type="number" step="0.1" class="precomp"></div>
+    <div class="campo"><label>N già distribuito (kg/ha)</label><input id="nGia" type="number" value="0"></div>
+    <div class="campo"><label><input id="irriguo" type="checkbox"> Irriguo</label></div>
+  </div>
+  <div class="avanti"><button class="b" data-vai="2">Avanti →</button></div>
+</section>
+
+<section class="passo" id="p-suolo" data-titolo="3 Suolo" hidden>
+  <h2>3 · Suolo</h2>
+  <p class="nota" id="fonteSuolo">Valori precompilati dalla zona pedologica.</p>
+  <div class="griglia">
+    <div class="campo"><label>Tessitura</label><input id="tessitura" class="precomp"></div>
+    <div class="campo"><label>Sostanza organica (%)</label><input id="so" type="number" step="0.1" class="precomp"></div>
+    <div class="campo"><label>Fosforo assimilabile (ppm)</label><input id="pPpm" type="number" class="precomp"></div>
+    <div class="campo"><label>Metodo P</label><select id="metodoP"><option>Olsen</option><option>Bray</option></select></div>
+    <div class="campo"><label>Potassio scambiabile (ppm)</label><input id="kPpm" type="number" class="precomp"></div>
+    <div class="campo"><label>Metodo K</label><select id="metodoK"><option>ammonio acetato</option><option>Mehlich3</option></select></div>
+  </div>
+  <p class="nota">Se l'analisi usa un metodo diverso, il tool converte con <code>regole/conversioni_metodi_analisi.json</code>.</p>
+  <div class="avanti"><button class="b" data-vai="3">Avanti →</button></div>
+</section>
+
+<section class="passo" id="p-clima" data-titolo="4 Clima" hidden>
+  <h2>4 · Contesto climatico (consultazione)</h2>
+  <p class="nota" id="infoClima"></p>
+  <div class="campo" style="max-width:260px"><label>Annata di riferimento per il calcolo</label><select id="annata"><option value="medio">media</option><option value="secco">secca</option><option value="umido">umida</option></select></div>
+  <div class="graf"><canvas id="grafClima"></canvas></div>
+  <p class="nota">Curve tipo di crescita della biomassa (in reale: simulazioni DSSAT di DAFNAE per stazione e coltura).</p>
+  <div class="avanti"><button class="b" data-vai="4">Avanti →</button></div>
+</section>
+
+<section class="passo" id="p-var" data-titolo="5 Variabilità" hidden>
+  <h2>5 · Variabilità dentro l'appezzamento</h2>
+  <div id="mappaVar" class="mappa"></div>
+  <div class="nota" id="infoVar" style="margin-top:8px"></div>
+  <div class="avanti"><button class="b" data-vai="5">Avanti →</button></div>
+</section>
+
+<section class="passo" id="p-prezzi" data-titolo="6 Prezzi" hidden>
+  <h2>6 · Prezzi (facoltativo)</h2>
+  <p class="nota">Precompilati da <code>economia/prezzi.csv</code>: servono per la dose <b>economicamente</b> conveniente.</p>
+  <div class="griglia">
+    <div class="campo"><label>Prezzo <span id="etProd">prodotto</span></label><input id="prezzoProd" type="number" class="precomp"></div>
+    <div class="campo"><label>Azoto N (€/kg)</label><input id="prezzoN" type="number" step="0.01" class="precomp"></div>
+    <div class="campo"><label>P₂O₅ (€/kg)</label><input id="prezzoP" type="number" step="0.01" class="precomp"></div>
+    <div class="campo"><label>K₂O (€/kg)</label><input id="prezzoK" type="number" step="0.01" class="precomp"></div>
+  </div>
+  <div class="avanti"><button class="b" data-vai="6">Calcola →</button></div>
+</section>
+
+<section class="passo" id="p-ris" data-titolo="7 Risultati" hidden>
+  <h2>7 · Dosi consigliate</h2>
+  <div id="risultati"></div>
+  <h3>Curva di risposta all'azoto e margine economico</h3>
+  <div class="graf"><canvas id="grafRisp"></canvas></div>
+  <h3>Esporta e conserva</h3>
+  <div class="bar">
+    <button class="b" id="btnPresScarica">Scarica prescrizione (GeoJSON)</button><button class="b sec" id="btnPresCopia">Copia prescrizione</button>
+  </div>
+  <div class="bar">
+    <button class="b" id="btnFasScarica">Salva "il mio appezzamento"</button><button class="b sec" id="btnFasCopia">Copia fascicolo</button>
+    <label class="b sec">Ricarica fascicolo<input type="file" id="fileFas" accept=".json"></label>
+  </div>
+  <div class="nota" id="esito"></div><textarea id="area" hidden></textarea>
+</section>
+
+<section class="passo" id="p-repo" data-titolo="Repository" hidden>
+  <h2>Il repository dei dati di progetto</h2>
+  <p class="nota">Il tool non ha un database: legge file aperti (CSV, JSON, GeoJSON) da un repository GitHub. Nessun dato degli agricoltori è salvato qui.</p>
+  <table><tr><th>File</th><th>Fonte</th><th>Stato</th></tr><tbody id="repoLista"></tbody></table>
+  <h3>Guarda un file</h3>
+  <div class="campo" style="max-width:420px"><select id="repoFile"></select></div>
+  <pre id="repoTesto"></pre>
+</section>
+
+<section class="passo" id="p-lim" data-titolo="Potenzialità e limiti" hidden>
+  <h2>Cosa dimostra la demo e quali limiti abbiamo</h2>
+  <h3>Funziona già (in questa demo)</h3>
+  <ul class="lim">
+    <li><span class="tag t-ok">OK</span>Web-app statica usabile da smartphone: <b>tutti i calcoli girano nel browser</b>, nessun server da pagare.</li>
+    <li><span class="tag t-ok">OK</span>Precompilazione automatica da coordinate dell'appezzamento → areale → suolo, clima, valori tipici, prezzi.</li>
+    <li><span class="tag t-ok">OK</span>Metamodello N come rete neurale eseguita nel browser (qui pesi finti; in reale ONNX Runtime Web con il modello DAFNAE).</li>
+    <li><span class="tag t-ok">OK</span>Dose economica ottimale, P e K per classi di dotazione, conversione dei metodi di analisi.</li>
+    <li><span class="tag t-ok">OK</span>Zonazione in 3 classi e dose variabile di N, esportazione GeoJSON della prescrizione.</li>
+    <li><span class="tag t-ok">OK</span>Fascicolo "il mio appezzamento" salvato e ricaricato dall'agricoltore: i suoi dati restano sul suo dispositivo.</li>
+    <li><span class="tag t-ok">OK</span>Repository dati versionato su GitHub con catalogo, schema del fascicolo e <b>test automatici</b> del motore di calcolo.</li>
+  </ul>
+  <h3>Limiti e punti da decidere</h3>
+  <ul class="lim">
+    <li><span class="tag t-no">LIMITE</span><b>Google Earth Engine non si chiama direttamente da una pagina statica</b>: serve autenticazione e un piccolo servizio intermedio (o indici pre-calcolati a calendario e salvati nel repository). Qui l'indice è simulato. Nodo E1/E2 (licenza GEE per uso commerciale).</li>
+    <li><span class="tag t-dec">DA DECIDERE</span>Mappe di base: nella pagina di anteprima Claude le mappe esterne sono bloccate (vedi solo gli areali); su <b>GitHub Pages</b> si caricano OpenStreetMap / ortofoto regionali.</li>
+    <li><span class="tag t-dec">DA DECIDERE</span>GitHub Pages gratis solo con repository <b>pubblico</b> (coerente con i dati aperti PEI-AGRI) – altrimenti piano a pagamento.</li>
+    <li><span class="tag t-dec">DA DECIDERE</span>Limiti GitHub: file ≤100 MB, repository consigliato &lt;1–5 GB, sito Pages ≤1 GB. Le tabelle stanno in pochi MB; la <b>matrice DSSAT</b> (nodo C1) va dimensionata: se pesa, si divide o va su Release/Zenodo.</li>
+    <li><span class="tag t-dec">DA DECIDERE</span>Export per il trattore: qui GeoJSON; lo <b>shapefile</b> e i formati ISOBUS richiedono una libreria in più e prove con i monitor reali.</li>
+    <li><span class="tag t-dec">DA DECIDERE</span>Caricamento SHP/KML e particelle catastali/AVEPA: fattibile con librerie aggiuntive; le particelle dipendono dall'accesso ai servizi regionali.</li>
+    <li><span class="tag t-no">LIMITE</span>Versione commerciale (chatbot che legge i referti, cartella Drive dell'agricoltore, account): richiede un servizio esterno a consumo; l'architettura a moduli è già predisposta.</li>
+    <li><span class="tag t-dec">DA DECIDERE</span>Proprietà intellettuale e licenza del metamodello DAFNAE e dei dati del repository (es. CC-BY 4.0).</li>
+  </ul>
+  <h3>Come è stata costruita</h3>
+  <p class="nota">Repository, dati di esempio, motore di calcolo, 6 test automatici e interfaccia sono stati scritti da Claude in circa 1 ora, a partire dalla bozza v0.2 del 05/11/2026 (schemi di flusso, repository e tool). Ogni modifica è tracciata nello storico GitHub del repository <code>precisionfert-demo</code>. Ruolo proposto: Fabrizio imposta l'architettura concettuale e rivede le scelte; Johnny + Claude sviluppano.</p>
+</section>
+
+</main>
+<div id="toast" hidden></div>
+<script src="vendor/leaflet.js"></script>
+<script src="vendor/turf.min.js"></script>
+<script src="vendor/chart.umd.js"></script>
+<script src="motore.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
