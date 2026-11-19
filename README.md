@@ -2,6 +2,8 @@
 
 > ⚠️ **DEMO** – dati, regole e modello sono **di esempio, verosimili ma non reali**. Servono a mostrare funzioni e architettura (WP5 Att. 11), non a dare consigli di concimazione.
 
+## 👉 Apri la demo: https://johnnym1986.github.io/precisionfert-demo/app/
+
 Prototipo funzionante preparato per la riunione del 19/11/2026 (ATEA Group S.r.l. SB), a partire dalla bozza v0.2 del 05/11/2026 *“Passaggi operativi e struttura”*.
 
 ## Cosa contiene
